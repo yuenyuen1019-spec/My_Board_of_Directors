@@ -4,7 +4,10 @@
 
 我的董事會 API 提供完整的智囊團管理、聊天互動和用戶管理功能。
 
-**Base URL**: `http://localhost:8000/api`
+**Base URL**: `http://localhost:8000/api`  
+**測試服務器**: `http://localhost:8001/api`  
+**文檔版本**: v1.1  
+**最後更新**: 2025-01-27
 
 ## 認證
 
@@ -28,6 +31,75 @@ Authorization: Bearer <your-jwt-token>
 ```
 
 ## 端點
+
+### 健康檢查 (Health Check)
+
+#### GET /health
+檢查服務器健康狀態
+
+**回應**:
+```json
+{
+  "status": "OK",
+  "timestamp": "2025-01-27T10:30:00Z",
+  "uptime": 3600,
+  "environment": "development"
+}
+```
+
+### 測試服務器端點 (Test Server)
+
+#### GET /api/board-members (測試服務器)
+獲取智囊團成員列表 (模擬數據)
+
+**Base URL**: `http://localhost:8001`
+
+**回應**:
+```json
+{
+  "success": true,
+  "data": {
+    "data": [
+      {
+        "id": "1",
+        "name": "史蒂夫·賈伯斯",
+        "nameEn": "Steve Jobs",
+        "nameZh": "史蒂夫·賈伯斯",
+        "birthYear": 1955,
+        "deathYear": 2011,
+        "nationality": "美國",
+        "field": "科技創新",
+        "bio": "蘋果公司聯合創始人，革命性的產品設計師",
+        "philosophy": "設計不僅是外觀，更是功能",
+        "famousQuotes": "Stay hungry, stay foolish",
+        "isActive": true
+      },
+      {
+        "id": "2",
+        "name": "華倫·巴菲特",
+        "nameEn": "Warren Buffett",
+        "nameZh": "華倫·巴菲特",
+        "birthYear": 1930,
+        "deathYear": null,
+        "nationality": "美國",
+        "field": "投資理財",
+        "bio": "股神，價值投資大師",
+        "philosophy": "長期投資，價值為本",
+        "famousQuotes": "Be fearful when others are greedy",
+        "isActive": true
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 2,
+      "totalPages": 1,
+      "hasNext": false,
+      "hasPrev": false
+    }
+  }
+}
+```
 
 ### 認證 (Authentication)
 
@@ -429,6 +501,49 @@ Authorization: Bearer <your-jwt-token>
 取消訂閱
 
 **認證**: 需要
+
+### 數據庫工具 (Database Utilities)
+
+#### GET /db/health
+檢查數據庫連接狀態
+
+**認證**: 需要
+
+**回應**:
+```json
+{
+  "success": true,
+  "data": {
+    "status": "healthy",
+    "connected": true,
+    "responseTime": "5ms"
+  }
+}
+```
+
+#### POST /db/transaction
+執行數據庫事務
+
+**認證**: 需要
+
+**請求體**:
+```json
+{
+  "operations": [
+    {
+      "type": "create",
+      "model": "user",
+      "data": { "email": "user@example.com" }
+    },
+    {
+      "type": "update",
+      "model": "user",
+      "where": { "id": "user_id" },
+      "data": { "lastLogin": "2025-01-27T10:30:00Z" }
+    }
+  ]
+}
+```
 
 ### Webhooks
 

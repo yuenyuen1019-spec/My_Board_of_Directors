@@ -74,8 +74,15 @@ export interface AIProviderConfig {
 }
 
 export interface AIServiceConfig {
-  provider: 'openai' | 'claude' | 'local';
+  provider: 'openai' | 'perplexity' | 'groq' | 'openrouter' | 'huggingface' | 'mock' | 'claude' | 'local';
   openai?: AIProviderConfig;
+  perplexity?: AIProviderConfig;
+  groq?: AIProviderConfig;
+  openrouter?: AIProviderConfig;
+  huggingface?: AIProviderConfig;
+  mock?: {
+    enabled?: boolean;
+  };
   claude?: AIProviderConfig;
   local?: {
     modelPath?: string;

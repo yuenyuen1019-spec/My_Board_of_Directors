@@ -16,7 +16,10 @@
     "db:studio": "prisma studio",
     "db:seed": "ts-node prisma/seed.ts",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:ai": "npm run build && node test-ai.js",
+    "setup:ai": "chmod +x ../scripts/setup-ai.sh && ../scripts/setup-ai.sh",
+    "quick-start": "chmod +x ../scripts/quick-start.sh && ../scripts/quick-start.sh"
   },
   "dependencies": {
     "express": "^4.18.2",

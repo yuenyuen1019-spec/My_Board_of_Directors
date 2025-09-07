@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { LeftSidebar } from '@/components/layout/left-sidebar'
 import { HeroSection } from '@/components/landing/hero-section'
-import { ChatArea } from '@/components/landing/chat-area'
+import ChatArea from '@/components/landing/chat-area'
 import { Footer } from '@/components/layout/footer'
 
 export default function HomePage() {

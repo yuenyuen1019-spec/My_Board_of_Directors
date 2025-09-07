@@ -1,0 +1,203 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// 用戶模型
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  firstName String?
+  lastName  String?
+  avatar    String?
+  language  String   @default("zh-TW") // zh-TW, zh-CN, en
+  timezone  String   @default("Asia/Taipei")
+  
+  // 訂閱相關
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  planType       String        @default("FREE")
+  planExpiresAt  DateTime?
+  
+  // 使用限制
+  dailyQueriesUsed    Int @default(0)
+  monthlyQueriesUsed  Int @default(0)
+  lastQueryResetDate  DateTime @default(now())
+  
+  // 時間戳
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // 關聯
+  userBoards     UserBoard[]
+  chatSessions   ChatSession[]
+  payments       Payment[]
+  
+  @@map("users")
+}
+
+// 智囊團成員模型
+model BoardMember {
+  id          String   @id @default(cuid())
+  name        String
+  nameEn      String?  // 英文名
+  nameZh      String?  // 中文名
+  birthYear   Int?
+  deathYear   Int?
+  nationality String?
+  field       String   // 主要領域
+  fieldEn     String?  // 英文領域
+  fieldZh     String?  // 中文領域
+  
+  // 詳細資訊
+  bio         String
+  bioEn       String?
+  bioZh       String?
+  achievements String // JSON string
+  coreBeliefs String
+  coreBeliefsEn String?
+  coreBeliefsZh String?
+  famousQuotes String // JSON string
+  famousQuotesEn String // JSON string
+  famousQuotesZh String // JSON string
+  
+  // 著作和演講
+  works       String // JSON string
+  worksEn     String // JSON string
+  worksZh     String // JSON string
+  speeches    String // JSON string
+  speechesEn  String // JSON string
+  speechesZh  String // JSON string
+  
+  // 相關連結
+  links       String? // JSON string
+  
+  // 頭像和圖片
+  avatar      String?
+  images      String // JSON string
+  
+  // AI 提示詞模板
+  systemPrompt String
+  systemPromptEn String?
+  systemPromptZh String?
+  
+  // 狀態
+  isActive    Boolean  @default(true)
+  isPremium   Boolean  @default(false) // 是否為付費內容
+  
+  // 時間戳
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 關聯
+  userBoards  UserBoard[]
+  chatMessages ChatMessage[]
+  
+  @@map("board_members")
+}
+
+// 用戶智囊團模型
+model UserBoard {
+  id        String   @id @default(cuid())
+  userId    String
+  memberId  String
+  position  Int      // 在智囊團中的位置
+  isActive  Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // 關聯
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  member BoardMember  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, memberId])
+  @@map("user_boards")
+}
+
+// 聊天會話模型
+model ChatSession {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String?
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 關聯
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages ChatMessage[]
+  
+  @@map("chat_sessions")
+}
+
+// 聊天訊息模型
+model ChatMessage {
+  id        String   @id @default(cuid())
+  sessionId String
+  memberId  String?  // 如果為 null，則是用戶訊息
+  role      String
+  content   String
+  metadata  String?    // JSON string
+  
+  createdAt DateTime @default(now())
+  
+  // 關聯
+  session ChatSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  member  BoardMember? @relation(fields: [memberId], references: [id])
+  
+  @@map("chat_messages")
+}
+
+// 訂閱模型
+model Subscription {
+  id                String   @id @default(cuid())
+  stripeCustomerId  String   @unique
+  stripeSubscriptionId String? @unique
+  planType          String
+  status            String
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // 關聯
+  users User[]
+  
+  @@map("subscriptions")
+}
+
+// 支付記錄模型
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  stripePaymentId String   @unique
+  amount          Int      // 以分為單位
+  currency        String   @default("usd")
+  status          String
+  description     String?
+  
+  createdAt       DateTime @default(now())
+  
+  // 關聯
+  user User @relation(fields: [userId], references: [id])
+  
+  @@map("payments")
+}
+
+// 使用 String 類型替代枚舉
+// PlanType: FREE, BASIC, PROFESSIONAL, ENTERPRISE
+// SubscriptionStatus: ACTIVE, CANCELED, PAST_DUE, UNPAID, INCOMPLETE, INCOMPLETE_EXPIRED, TRIALING
+// PaymentStatus: PENDING, SUCCEEDED, FAILED, CANCELED, REFUNDED
+// MessageRole: USER, ASSISTANT, SYSTEM

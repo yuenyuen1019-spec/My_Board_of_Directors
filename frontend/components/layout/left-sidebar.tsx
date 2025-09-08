@@ -26,10 +26,24 @@ export function LeftSidebar({ isOpen, setIsOpen }: LeftSidebarProps) {
           isOpen ? 'bg-white' : 'bg-gray-100'
         }`}>
           
-          {/* 漢堡選單按鈕 - 在側邊欄內部 */}
+          {/* Logo 和漢堡選單按鈕區域 - 水平對齊 */}
           <div className={`p-4 transition-all duration-300 ease-in-out ${
-            isOpen ? 'flex justify-end' : 'flex justify-center'
+            isOpen ? 'flex items-center justify-between' : 'flex justify-center'
           }`}>
+            {/* Logo - 只在展開時顯示 */}
+            {isOpen && (
+              <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">董</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-bold text-lg text-gray-900 leading-tight">{t('app.title')}</span>
+                  <span className="text-xs text-gray-500 leading-tight">My Board of Directors</span>
+                </div>
+              </Link>
+            )}
+            
+            {/* 漢堡選單按鈕 - 在右邊 */}
             <Button 
               onClick={() => setIsOpen(!isOpen)}
               variant="ghost"
@@ -55,19 +69,6 @@ export function LeftSidebar({ isOpen, setIsOpen }: LeftSidebarProps) {
                 <Button onClick={() => setIsOpen(false)} variant="ghost" size="sm">
                   <X className="h-4 w-4" />
                 </Button>
-              </div>
-
-              {/* Logo和標題 */}
-              <div className="mb-8">
-                <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-                  <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">董</span>
-                  </div>
-                  <div>
-                    <h1 className="font-bold text-xl text-gray-900">{t('app.title')}</h1>
-                    <p className="text-sm text-gray-500">My Board of Directors</p>
-                  </div>
-                </Link>
               </div>
               
               {/* 語言選單 */}

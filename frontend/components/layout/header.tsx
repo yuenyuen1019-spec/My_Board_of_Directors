@@ -24,7 +24,7 @@ export function Navigation({ sidebarOpen, setSidebarOpen }: NavigationProps) {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="md:hidden flex items-center justify-center"
             >
               <Menu className="h-5 w-5" />
             </Button>
@@ -33,7 +33,10 @@ export function Navigation({ sidebarOpen, setSidebarOpen }: NavigationProps) {
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">董</span>
               </div>
-              <span className="font-bold text-xl text-gray-900">{t('app.title')}</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xl text-gray-900 leading-tight">{t('app.title')}</span>
+                <span className="text-xs text-gray-500 leading-tight">My Board of Directors</span>
+              </div>
             </Link>
             
             <div className="flex items-center space-x-4 ml-8">
